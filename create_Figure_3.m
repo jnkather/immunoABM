@@ -6,7 +6,7 @@
 % depending on probability of stroma generation (Stro low vs. high) and 
 % the magnitude of immune cell influx (Lym low vs. high) (C) outcome 
 % three months after baseline (60 days, dashed line). Response criteria 
-% were chosen analogous to the RECIST criteria (36). The subgroup “Stro 
+% were chosen analogous to the RECIST criteria. The subgroup “Stro 
 % low, Lym high” had a 100% response rate, the majority complete responses 
 % (i.e. eradication of all tumor cells). Abbreviaions: PD = progressive 
 % disease, SD = stable disease, PR = partial remission, CR = complete 
@@ -23,7 +23,6 @@ for expname =  ...
          'INTERVENTION_HI_STRO_HI_LYM_MANY',...
          'INTERVENTION_LO_STRO_HI_LYM_MANY' }
 
-%try % DIRTY! :-(
     
 randmodulator = 100; % default 100, for duplicate: 101, for triplicate: 102
 [modVars,override,tFirstRun,domSize,tAfterInterv] = ...
@@ -128,17 +127,6 @@ end
 % SAVE ALL RESULTS
 save(['./output/',masterID],'finalSummaryPre','paramsPre',...
     'finalSummaryPost','paramsPost','summaryPre','summaryPost');
-
-% catch
-%     warning('ERROR OCCURED!');
-%     disp('############')
-%     disp('##O######O##')
-%     disp('############')
-%     disp('###OOOOOO###')
-%     disp('############')
-%     whos
-%     pause(120);
-% end % end try
 
 % clean up
 clear set finalSummaryPre paramsPre finalSummaryPost paramsPost

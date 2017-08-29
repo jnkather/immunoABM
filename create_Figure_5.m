@@ -30,8 +30,6 @@ for expname =  ...
 % 	 'THERAPY_IMMUNE_STROMAPERM_L1-L2',...
 % 	 'THERAPY_IMMUNE_STROMAPERM_L2-L3',...
 % 	 'THERAPY_IMMUNE_STROMAPERM_L2-L4',...
-
-%try % DIRTY! :-(
     
 randmodulator = 100; % default 100, for duplicate: 101, for triplicate: 102
 [modVars,override,tFirstRun,domSize,tAfterInterv] = ...
@@ -136,17 +134,6 @@ end
 % SAVE ALL RESULTS
 save(['./output/',masterID],'finalSummaryPre','paramsPre',...
     'finalSummaryPost','paramsPost','summaryPre','summaryPost');
-
-% catch
-%     warning('ERROR OCCURED!');
-%     disp('############')
-%     disp('##O######O##')
-%     disp('############')
-%     disp('###OOOOOO###')
-%     disp('############')
-%     whos
-%     pause(120);
-% end % end try
 
 % clean up
 clear set finalSummaryPre paramsPre finalSummaryPost paramsPost
