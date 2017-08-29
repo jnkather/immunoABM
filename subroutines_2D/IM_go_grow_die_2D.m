@@ -32,6 +32,7 @@ for iloop = 1:numel(act) % only for those that will do anything
                 IMprop.Pcap(m.indxF(currID)) = IMprop.Pcap(m.indxF(currID))-1; % decrease remaining prol. cap.
                 IMprop.Pcap = [IMprop.Pcap, IMprop.Pcap(m.indxF(currID))]; % update property vector for Pmax
                 IMprop.Kcap = [IMprop.Kcap, IMkmax]; % update property vector for remaining kills
+                IMprop.engaged = [IMprop.engaged, 0]; % update property vector for engagement
             else % migration
                 L(IMcells(m.indxF(currID))) = false; %freeing spot
                 IMcells(m.indxF(currID)) = uint32(ngh2(indO));

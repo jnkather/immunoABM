@@ -15,6 +15,7 @@ nNewCells = numel(coordsNewIMcells); % number of new immune cells
 IMcells = [IMcells, coordsNewIMcells]; % add new cells to stack
 IMprop.Pcap = [IMprop.Pcap, repmat(IMpmax,1,nNewCells)];  % add properties
 IMprop.Kcap = [IMprop.Kcap, repmat(IMkmax,1,nNewCells)];  % add properties
+IMprop.engaged = [IMprop.engaged, zeros(1,nNewCells)];    % add properties
 end
 
 end

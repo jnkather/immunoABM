@@ -112,35 +112,35 @@ switch char(expname) % parameters change after intervention
 % +++++++++++++++++
 
         case 'INTERVENTION_HI_STRO_HI_LYM_MANY'
-    domainSize = [500 500]; 
-    timeFirstRun = [120 30];
-    addSteps = 360; 
-    modVars.probSeedFibr = [0.06, 0.06, 0.06, 0.06, 0.06];
-    modVars.IMinflRate =   [8, 8, 8, 8,8,8, 8, 8, 8,8];
+    domainSize = [400 400]; % was 500 500
+    timeFirstRun = [120 15]; % was 120 30
+    addSteps = 240;  % was 360
+    modVars.probSeedFibr = repmat(0.06,[1 5]);   %was repmat(0.06,[1 5]); 
+    modVars.IMinflRate =   repmat(8,[1 10]);   %was repmat(8,[1 10]);  
     %overrideBefore.IMinflRate = 0;
     
     case 'INTERVENTION_HI_STRO_LO_LYM_MANY'
-    domainSize = [500 500];
-    timeFirstRun = [120 30];
-    addSteps = 360; 
-    modVars.probSeedFibr = [0.06, 0.06, 0.06, 0.06, 0.06];
-    modVars.IMinfluxProb =  [0.4, 0.4, 0.4, 0.4,0.4, 0.4, 0.4, 0.4, 0.4, 0.4];    
+    domainSize = [400 400]; % was 500 500
+    timeFirstRun = [120 15]; % was 120 30
+    addSteps = 240;  % was 360 
+    modVars.probSeedFibr =  repmat(0.06,[1 5]);   %was repmat(0.06,[1 5]); 
+    modVars.IMinfluxProb =  repmat(0.2,[1 10]);   %was repmat(0.4,[1 10]);  
     %overrideBefore.IMinfluxProb = 0;
     
     case 'INTERVENTION_LO_STRO_LO_LYM_MANY'
-    domainSize = [500 500]; 
-    timeFirstRun = [120 30];
-    addSteps = 360; 
-    modVars.probSeedFibr = [0.0001, 0.0001, 0.0001, 0.0001, 0.0001];
-    modVars.IMinfluxProb =  [0.4, 0.4, 0.4, 0.4,0.4, 0.4, 0.4, 0.4, 0.4, 0.4];   
+    domainSize = [400 400]; % was 500 500 
+    timeFirstRun = [120 15]; % was 120 30
+    addSteps = 240;  % was 360
+    modVars.probSeedFibr = repmat(0.003,[1 5]);   %was repmat(0.0001,[1 5]); 
+    modVars.IMinfluxProb =  repmat(0.2,[1 10]);   %was repmat(0.4,[1 10]);  
     %overrideBefore.IMinfluxProb = 0;
     
     case 'INTERVENTION_LO_STRO_HI_LYM_MANY'
-    domainSize = [500 500];
-    timeFirstRun = [120 30];
-    addSteps = 360; 
-    modVars.probSeedFibr = [0.0001, 0.0001, 0.0001, 0.0001, 0.0001];
-    modVars.IMinflRate =   [8, 8, 8, 8,8,8, 8, 8, 8,8];    
+    domainSize = [400 400]; % was 500 500
+    timeFirstRun = [120 15]; % was 120 30
+    addSteps = 240;  % was 360
+    modVars.probSeedFibr = repmat(0.003,[1 5]);   %was repmat(0.0001,[1 5]); 
+    modVars.IMinflRate =   repmat(8,[1 10]);   %was repmat(8,[1 10]);  
     %overrideBefore.IMinflRate = 0;
     
     % **************
@@ -229,80 +229,87 @@ switch char(expname) % parameters change after intervention
     % ----------- IMMUNOTHERAPY SIMULATION
     
   otherwise % ------- ALL L1 L2 L3 L4 levels
-    domainSize = [500 500];
-    timeFirstRun = [300 100];
-    addSteps = 300; 
+    domainSize = [400 400];
+    timeFirstRun = [240 60];
+    addSteps = 240; % previously: 300
 	clear overrideBefore
-    overrideBefore.probSeedFibr = 0.04;    
-    overrideBefore.IMinfluxProb = 0.4; 
-    overrideBefore.stromaPerm = 0; 
-    overrideBefore.IMpkill = 0.5; 
+    overrideBefore.probSeedFibr = 0.01;    % was 0.04
+   % overrideBefore.IMinfluxProb = 0.4; 
+   % overrideBefore.TUps = 0.70; 
+    overrideBefore.stromaPerm = 0;  
+   % overrideBefore.IMpkill = 0.1; % was 0.25
+    
+    repeatMe1 = [1 3]; % default 1 3
+    repeatMe2 = [1 8]; % default 1 8
+    
+    myInfl = [1      2      4     8];
+    myPerm = [0      0.04    0.08   0.16];
 
 	switch char(expname) % GRADUAL
 	
 	case 'THERAPY_IMMUNE_STROMAPERM_L1-L1'		% LOW IMMUNE --------
-	modVars.IMinflRate = repmat(3,[1 5]);
-    modVars.stromaPerm = repmat(0.05,[1 5]); 
+	modVars.IMinflRate = repmat(myInfl(1),repeatMe1);
+    modVars.stromaPerm = repmat(myPerm(1),repeatMe2); 
 	
 	case 'THERAPY_IMMUNE_STROMAPERM_L1-L2'
-	modVars.IMinflRate = repmat(3,[1 5]);
-    modVars.stromaPerm = repmat(0.20,[1 5]); 
+	modVars.IMinflRate = repmat(myInfl(1),repeatMe1);
+    modVars.stromaPerm = repmat(myPerm(2),repeatMe2); 
 	
 	case 'THERAPY_IMMUNE_STROMAPERM_L1-L3'
-	modVars.IMinflRate = repmat(3,[1 5]);
-    modVars.stromaPerm = repmat(0.35,[1 5]); 
+	modVars.IMinflRate = repmat(myInfl(1),repeatMe1);
+    modVars.stromaPerm = repmat(myPerm(3),repeatMe2); 
 	
 	case 'THERAPY_IMMUNE_STROMAPERM_L1-L4'
-	modVars.IMinflRate = repmat(3,[1 5]);
-    modVars.stromaPerm = repmat(0.5,[1 5]); 	
+	modVars.IMinflRate = repmat(myInfl(1),repeatMe1);
+    modVars.stromaPerm = repmat(myPerm(4),repeatMe2); 	
 	
 		case 'THERAPY_IMMUNE_STROMAPERM_L2-L1'		% LO MID IMMUNE --------
-		modVars.IMinflRate = repmat(6,[1 5]);
-		modVars.stromaPerm = repmat(0.05,[1 5]); 
+		modVars.IMinflRate = repmat(myInfl(2),repeatMe1);
+		modVars.stromaPerm = repmat(myPerm(1),repeatMe2); 
 		
 		case 'THERAPY_IMMUNE_STROMAPERM_L2-L2'
-		modVars.IMinflRate = repmat(6,[1 5]);
-		modVars.stromaPerm = repmat(0.20,[1 5]); 
+		modVars.IMinflRate = repmat(myInfl(2),repeatMe1);
+		modVars.stromaPerm = repmat(myPerm(2),repeatMe2); 
 	
 		case 'THERAPY_IMMUNE_STROMAPERM_L2-L3'
-		modVars.IMinflRate = repmat(6,[1 5]);
-		modVars.stromaPerm = repmat(0.35,[1 5]); 
+		modVars.IMinflRate = repmat(myInfl(2),repeatMe1);
+		modVars.stromaPerm = repmat(myPerm(3),repeatMe2); 
 	
 		case 'THERAPY_IMMUNE_STROMAPERM_L2-L4'
-		modVars.IMinflRate = repmat(6,[1 5]);
-		modVars.stromaPerm = repmat(0.5,[1 5]); 	
+		modVars.IMinflRate = repmat(myInfl(2),repeatMe1);
+		modVars.stromaPerm = repmat(myPerm(4),repeatMe2); 	
 	
 			case 'THERAPY_IMMUNE_STROMAPERM_L3-L1'		% HI MID IMMUNE --------
-			modVars.IMinflRate = repmat(9,[1 5]);
-			modVars.stromaPerm = repmat(0.05,[1 5]); 
+			modVars.IMinflRate = repmat(myInfl(3),repeatMe1);
+			modVars.stromaPerm = repmat(myPerm(1),repeatMe2); 
 		
 			case 'THERAPY_IMMUNE_STROMAPERM_L3-L2'
-			modVars.IMinflRate = repmat(9,[1 5]);
-			modVars.stromaPerm = repmat(0.20,[1 5]); 
+			modVars.IMinflRate = repmat(myInfl(3),repeatMe1);
+			modVars.stromaPerm = repmat(myPerm(2),repeatMe2); 
 			
 			case 'THERAPY_IMMUNE_STROMAPERM_L3-L3'
-			modVars.IMinflRate = repmat(9,[1 5]);
-			modVars.stromaPerm = repmat(0.35,[1 5]); 
+			modVars.IMinflRate = repmat(myInfl(3),repeatMe1);
+			modVars.stromaPerm = repmat(myPerm(3),repeatMe2); 
 			
 			case 'THERAPY_IMMUNE_STROMAPERM_L3-L4'
-			modVars.IMinflRate = repmat(9,[1 5]);
-			modVars.stromaPerm = repmat(0.5,[1 5]); 	
+			modVars.IMinflRate = repmat(myInfl(3),repeatMe1);
+			modVars.stromaPerm = repmat(myPerm(4),repeatMe2); 	
 		
 				case 'THERAPY_IMMUNE_STROMAPERM_L4-L1' 			% HI IMMUNE --------
-				modVars.IMinflRate = repmat(12,[1 5]);
-				modVars.stromaPerm = repmat(0.05,[1 5]); 
+				modVars.IMinflRate = repmat(myInfl(4),repeatMe1);
+				modVars.stromaPerm = repmat(myPerm(1),repeatMe2); 
 			
 				case 'THERAPY_IMMUNE_STROMAPERM_L4-L2'
-				modVars.IMinflRate = repmat(12,[1 5]);
-				modVars.stromaPerm = repmat(0.20,[1 5]); 	
+				modVars.IMinflRate = repmat(myInfl(4),repeatMe1);
+				modVars.stromaPerm = repmat(myPerm(2),repeatMe2); 	
 				
 				case 'THERAPY_IMMUNE_STROMAPERM_L4-L3'
-				modVars.IMinflRate = repmat(12,[1 5]);
-				modVars.stromaPerm = repmat(0.35,[1 5]); 
+				modVars.IMinflRate = repmat(myInfl(4),repeatMe1);
+				modVars.stromaPerm = repmat(myPerm(3),repeatMe2); 
 			
 				case 'THERAPY_IMMUNE_STROMAPERM_L4-L4'
-				modVars.IMinflRate = repmat(12,[1 5]);
-				modVars.stromaPerm = repmat(0.5,[1 5]); 	
+				modVars.IMinflRate = repmat(myInfl(4),repeatMe1);
+				modVars.stromaPerm = repmat(myPerm(4),repeatMe2); 	
 			
 	end
     

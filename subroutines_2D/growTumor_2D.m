@@ -32,16 +32,12 @@ finalImage = [];        % set empty resulting image
 % START ITERATION
 for i = 1:cnst.nSteps % iterate through time steps
 
-% adjust fibrosis permeability
-Lperm = rand(size(L))<stromaPerm; % randomly create permeability map
-L(Lf) = ~Lperm(Lf); % occupied means not permeable
-
 % START TUMOR CELL ROUND ------------------------------------------------
+L(Lf) = rand(sum(Lf(:)),1)>stromaPerm; % permeabilize some stroma-filled grid cells
 L([IMcells,TUcells]) = true; % ensure that all cells are present on the grid
 [TUcells,TUprop] = shuffleTU(TUcells,TUprop);
 [L, TUcells, TUprop] = TU_go_grow_die_2D( L, nh, TUcells, TUprop, TUpprol, TUpmig, TUpdeath, TUps);
 Lt = updateTumorGrid(L,TUcells); % update tumor grid
-L([IMcells,TUcells]) = true; % ensure that all cells are present on the grid
 % END TUMOR CELL ROUND ---------------------------------------------------
 
 % START MODIFY PARAMETER MAPS --------------------------------------------
@@ -55,29 +51,24 @@ if rand()<=IMinfluxProb % randomly trigger influx
 end
 
 [IMcells,IMprop] = shuffleIM(IMcells,IMprop); % randomly shuffle immune cells
-L(Ln) = false; % for immune cell movement, necrosis is invisible
-L([IMcells,TUcells]) = true; % ensure that all cells are present on the grid
 
 if numel(IMcells)>0 % if there are any immune cells 
 for j = 1:(IMspeed-1) % allow immune cells to move N times per round
+    L(Ln) = false; % for immune cell movement, necrosis is invisible
+    L(Lf) = rand(sum(Lf(:)),1)>stromaPerm; % permeabilize some stroma-filled grid cells
+    L([IMcells,TUcells]) = true; % ensure that all cells are present on the grid
     [L, IMcells] =  IM_go_2D(IMcells, IMpmig, IMrwalk, ChtaxMap, L, nh);
+    [TUcells, TUprop, IMcells, IMprop, L, Lt] = ... % tumor cell killing by immune cells 
+    IM_kill_TU_2D(TUcells, TUprop, IMcells, IMprop, L, Lt,IMpkill,nh,ChtaxMap,engagementDuration);
+    IMprop.engaged(IMprop.engaged>0) = IMprop.engaged(IMprop.engaged>0)-1; % un-engage lymphocytes
 end
-
-% tumor cell killing by immune cells (1/2)
-[TUcells, TUprop, IMcells, IMprop, L, Lt] = ...
-IM_kill_TU_2D(TUcells, TUprop, IMcells, IMprop, L, Lt,IMpkill,nh,ChtaxMap);
-
-% allow immune cells to move once more, to proliferate or die
+% allow immune cells to move once more or to proliferate or die
 [L, IMcells, IMprop] =  IM_go_grow_die_2D(IMcells, IMprop, IMpprol, IMpmig, ...
         IMpdeath, IMrwalk, IMkmax, ChtaxMap, L, nh); 
-
-% tumor cell killing by immune cells (2/2)
-[TUcells, TUprop, IMcells, IMprop, L, Lt] = ...
-IM_kill_TU_2D(TUcells, TUprop, IMcells, IMprop, L, Lt,IMpkill,nh,ChtaxMap);
-
-end
+end % end (if there are any immune cells)
 
 L(Ln|Lf) = true; % fully turn on necrosis and fibrosis again
+L([IMcells,TUcells]) = true; % ensure that all cells are present on the grid
 % END IMMUNE CELL ROUND --------------------------------------------------
 
 % START NECROSIS  --------------------------------------------
@@ -100,12 +91,11 @@ end
 % START FIBROSIS ------------------------------------------------------
 fibrosify = ~IMprop.Kcap & (rand(1,numel(IMcells))<probSeedFibr);
 if sum(fibrosify) % exchausted immune cells seed fibrosis
-    Lfseed = false(size(L));
-    Lfseed(IMcells(fibrosify)) = true; 
-    % smooth and expand fibrotic seed map
-    Lfseed = expandSeedMap(Lfseed,smoothSE,fibrFrac);
-    Lfseed(TUcells) = false;
-    Lf(Lfseed & ~Ln) = true; %update Lf grid
+    Lfseed = false(size(L)); % preallocate fibrosis seed map
+    Lfseed(IMcells(fibrosify)) = true;
+    Lfseed = expandSeedMap(Lfseed,smoothSE,fibrFrac); % smooth and expand fibrotic seed map
+    Lfseed(TUcells) = false; 
+    Lf(Lfseed & ~Ln) = true; % update fibrosis grid
     [IMcells,IMprop] = removeIM(IMcells,IMprop,fibrosify); % remove fibrosifying immune cells
     L(Lf) = true; % update L grid (master grid)
 end
